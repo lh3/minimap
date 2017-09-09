@@ -1,7 +1,5 @@
 CC=			gcc
 CFLAGS=		-g -Wall -O2 -Wc++-compat -Wno-unused-function
-CPPFLAGS=
-INCLUDES=	-I.
 OBJS=		kthread.o misc.o bseq.o sketch.o sdust.o index.o map.o
 PROG=		minimap
 PROG_EXTRA=	sdust minimap-lite
@@ -17,16 +15,16 @@ all:$(PROG)
 extra:all $(PROG_EXTRA)
 
 minimap:main.o libminimap.a
-		$(CC) $(CFLAGS) $< -o $@ -L. -lminimap $(LIBS)
+		$(CC) $(CFLAGS) $< -o $@ -L. -lminimap $(LDFLAGS) $(LIBS)
 
 minimap-lite:example.o libminimap.a
-		$(CC) $(CFLAGS) $< -o $@ -L. -lminimap $(LIBS)
+		$(CC) $(CFLAGS) $< -o $@ -L. -lminimap $(LDFLAGS) $(LIBS)
 
 libminimap.a:$(OBJS)
 		$(AR) -csru $@ $(OBJS)
 
 sdust:sdust.c kdq.h kvec.h kseq.h sdust.h
-		$(CC) -D_SDUST_MAIN $(CFLAGS) $< -o $@ -lz
+		$(CC) -D_SDUST_MAIN $(CFLAGS) $(CPPFLAGS) $(INCLUDES) $< -o $@ $(LDFLAGS) -lz
 
 clean:
 		rm -fr gmon.out *.o a.out $(PROG) $(PROG_EXTRA) *~ *.a *.dSYM session*
